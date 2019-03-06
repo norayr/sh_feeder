@@ -2,13 +2,20 @@ run:
     image: python:3.5-alpine
     script:
     - pip3 install -r requirements.txt
-    - ./pod_feeder.py --database feed.db
+    - ./pod_feeder.py
+        --pod-url   $POD_FEEDER_TEST_POD
+        --username  $POD_FEEDER_TEST_USER
+        --password  $POD_FEEDER_TEST_PASSWORD
+        --aspect-id $POD_FEEDER_TEST_ASPECT_ID
+        --database feed.db
         --feed-id test
         --feed-url https://www.eff.org/rss/updates.xml
-        --pod-url https://example.com
         --auto-tag foo
         --auto-tag bar
         --ignore-tag bar
-        --fetch-only
+        --category-tags
+        --summary
+        --via gitlb-ci
+        --limit 1
         --debug
     - ./clean_db.py feed.db
