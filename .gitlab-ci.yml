@@ -5,6 +5,7 @@ run:
     - ./pod_feeder.py --database ':memory:'
         --feed-id test
         --feed-url https://www.eff.org/rss/updates.xml
+        --pod-url https://example.com
         --auto-tag foo
         --auto-tag bar
         --ignore-tag bar
