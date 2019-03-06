@@ -132,7 +132,9 @@ class FeedItem():
         text = None
         if text_obj is not None:
             if text_obj.get('type') == 'text/html':
-                text = html2text.html2text(text_obj.get('value'))
+                text_maker = html2text.HTML2Text()
+                text_maker.body_width = 0
+                text = text_maker.handle(text_obj.get('value'))
             else:
                 text = text_obj.get('value')
         return text
@@ -184,11 +186,17 @@ class PodClient():
         # fetch=False to prevent diaspy from loading the stream needlessly
         return diaspy.streams.Stream(client, fetch=False)
 
-    def post(self, message, via=None):
+    def post(self, message, aspect_ids=[], via=None):
         """
         post a message
         """
-        self.stream.post(message, provider_display_name=via)
+        if len(aspect_ids) == 0:
+            aspect_ids.append('public')
+        self.stream.post(
+            text=message,
+            aspect_ids=aspect_ids,
+            provider_display_name=via
+        )
 
     def format_post(self, content, body=False, embed_image=False,
         no_branding=False, post_raw_link=False, summary=False):
@@ -217,7 +225,7 @@ class PodClient():
             summary=args.summary
         )
         print(message)
-        self.post(message, via=args.via)
+        self.post(message, via=args.via, aspect_ids=args.aspect_id)
         return True
 
 def connect_db(file):
@@ -264,6 +272,12 @@ def publish_items(db, client, args=None):
 
 def parse_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--aspect-id',
+        help="Aspects to share with. \
+            May specified multiple times (default: 'public')",
+        action='append',
+        default=[]
+    )
     parser.add_argument('--auto-tag',
         help="Hashtags to add to all posts. May be specified multiple times",
         action='append',
