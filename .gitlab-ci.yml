@@ -1,13 +1,18 @@
 run:
     image: python:3.5-alpine
+    variables:
+      POD_URL:    $POD_FEEDER_TEST_POD
+      POD_USER:   $POD_FEEDER_TEST_USER
+      POD_PASS:   $POD_FEEDER_TEST_PASSWORD
+      POD_ASPECT: $POD_FEEDER_TEST_ASPECT_ID
     script:
+    - echo $POD_URL
     - pip3 install -r requirements.txt
-    - echo $POD_FEEDER_TEST_POD
     - ./pod_feeder.py
-        --pod-url   $POD_FEEDER_TEST_POD
-        --username  $POD_FEEDER_TEST_USER
-        --password  $POD_FEEDER_TEST_PASSWORD
-        --aspect-id $POD_FEEDER_TEST_ASPECT_ID
+        --pod-url   $POD_URL
+        --username  $POD_USER
+        --password  $POD_PASS
+        --aspect-id $POD_ASPECT
         --database feed.db
         --feed-id test
         --feed-url https://www.eff.org/rss/updates.xml
