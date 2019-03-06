@@ -50,12 +50,12 @@ class Feed():
                 hashtags = ' '.join(i.tags)
                 # if not, insert it
                 conn.execute(
-                    "INSERT INTO feeds(guid, feed_id, title, body, link, \
-                    image, image_title, hashtags, posted, timestamp) \
-                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO feeds(guid, feed_id, title, body, summary, \
+                    link, image, image_title, hashtags, posted, timestamp) \
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                     (
-                        i.guid, self.feed_id, i.title, i.body, i.link, i.image,
-                        'image', hashtags, '0', i.timestamp
+                        i.guid, self.feed_id, i.title, i.body, i.summary,
+                        i.link, i.image, 'image', hashtags, '0', i.timestamp
                     )
                 )
                 conn.commit()
@@ -173,8 +173,19 @@ def connect_db(file):
             feed_id VARCHAR(127), title VARCHAR(255), link VARCHAR(255), \
             image VARCHAR(255), image_title VARCHAR(255), \
             hashtags VARCHAR(255), timestamp INTEGER(10), posted INTEGER(1), \
-            body VARCHAR(10000))'
+            body VARCHAR(10240), summary VARCHAR(2048))'
         )
+    else:
+        # check to see if this is a v1 database schema
+        summary_exists = False
+        rows = conn.execute("PRAGMA table_info('feeds')").fetchall()
+        for r in rows:
+            if 'summary' in r:
+                summary_exists = True
+                break
+        if summary_exists == False:
+            # if the summary column doesn't exist, add it
+            conn.execute("ALTER TABLE feeds ADD COLUMN summary VARCHAR(2048)")
     return conn
 
 def main():
