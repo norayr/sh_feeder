@@ -2,7 +2,7 @@ run:
     image: python:3.5-alpine
     script:
     - pip3 install -r requirements.txt
-    - ./pod_feeder.py --database ':memory:'
+    - ./pod_feeder.py --database feed.db
         --feed-id test
         --feed-url https://www.eff.org/rss/updates.xml
         --pod-url https://example.com
@@ -11,3 +11,4 @@ run:
         --ignore-tag bar
         --fetch-only
         --debug
+    - ./clean_db feed.db

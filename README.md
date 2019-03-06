@@ -14,11 +14,16 @@ is recommended.
 ## Installation
 pod_feeder_v2 requires python3. You can easily install the dependencies with pip:
 
-`$ pip3 install -r requirements.txt`
+`pip3 install -r requirements.txt`
 
 This script is intended to be run as a cron job, which might look something like this:
 
-@hourly ~/pod_feeder.py --feed-id myfeed --feed-url http://example.com/feeds/rss --pod-url https://diaspora.example.com --username user --password ******** --quiet
+`@hourly ~/pod_feeder.py --feed-id myfeed --feed-url http://example.com/feeds/rss --pod-url https://diaspora.example.com --username user --password ******** --quiet`
+
+There is also a database cleaner script that you can run as often as you like to
+keep your database size under control:
+
+`@weekly ~/clean_db.py feed.db > /dev/null 2>&1`
 
 ## Migrating from pod_feeder "classic"
 1. pod_feeder_v2's database schema is backward-compatible with the original, so
@@ -83,4 +88,3 @@ optional arguments:
 It is possible to publish a YouTube channel's feed, by using the following URL format:
 
     https://www.youtube.com/feeds/videos.xml?channel_id=<channel id>
-
