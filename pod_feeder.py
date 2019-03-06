@@ -222,17 +222,22 @@ class PodClient():
         return output
 
     def publish(self, content, args):
+        """
+        generate message text and post it to D*
+        """
         message = self.format_post(content,
             body=args.body,
             embed_image=args.embed_image,
             post_raw_link=args.post_raw_link,
             summary=args.summary
         )
-        print(message)
-        # self.post(message, via=args.via, aspect_ids=args.aspect_id)
+        self.post(message, via=args.via, aspect_ids=args.aspect_id)
         return True
 
 def connect_db(file):
+    """
+    connect to the database and initialize if necessary
+    """
     # check to see if a new database needs to be initialized
     init_db = False if os.path.isfile(file) else True
     conn = sqlite3.connect(file)
@@ -260,6 +265,9 @@ def connect_db(file):
     return conn
 
 def publish_items(db, client, args=None):
+    """
+    find queued items in the database and publish them
+    """
     query = "SELECT guid, title, link, image, image_title, hashtags, body, \
         summary FROM feeds WHERE feed_id == ? AND posted == 0 \
         AND timestamp > ? ORDER BY timestamp"
@@ -275,6 +283,9 @@ def publish_items(db, client, args=None):
             db.commit()
 
 def parse_args():
+    """
+    proccess command line args
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument('--aspect-id',
         help="Aspects to share with. \
@@ -373,6 +384,7 @@ def parse_args():
 
 def main():
     args = parse_args()
+    # slurp the feed
     feed = Feed(
         auto_tags=args.auto_tag,
         category_tags=args.category_tags,
@@ -380,8 +392,11 @@ def main():
         ignore_tags=args.ignore_tag,
         url=args.feed_url
     )
+    # establish a database connection
     db = connect_db(args.database)
+    # load the feed items into the database
     feed.load_db(db)
+    # skip pusblishing if --fetch-only is used
     if not args.fetch_only:
         client = PodClient(
             url=args.pod_url,
