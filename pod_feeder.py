@@ -8,11 +8,11 @@ class Feed():
     """
     def __init__(self, feed_id=None, url=None):
         self.url = url
-        self.feed = self._fetch(self.url)
+        self.feed = self.fetch(self.url)
         self.entries = self.feed.get('entries', [])
-        self.items = self._get_items()
+        self.items = self.get_items()
 
-    def _get_items(self):
+    def get_items(self):
         """
         returns a list of FeedItems
         """
@@ -21,7 +21,7 @@ class Feed():
             items.append(FeedItem(e))
         return items
 
-    def _fetch(self, url=None):
+    def fetch(self, url=None):
         """
         returns a parsed feed from feedparser
         """
@@ -40,21 +40,22 @@ class FeedItem():
         self.guid = entry.get('id')
         self.title = entry.get('title')
         self.link = entry.get('link')
-        self.image = self._get_image(entry.get('media_content', []))
-        self.tags = self._get_tags(entry.get('tags', []))
+        self.image = self.get_image(entry.get('media_content', []))
         self.timestamp = int(time.mktime(entry.get('published_parsed')))
-        self.body = self._get_body(entry.get('content'))
-        self.summary = self._get_summary(entry.get('summary_detail'))
+        self.body = self.get_body(entry.get('content'))
+        self.summary = self.get_summary(entry.get('summary_detail'))
+        self.tags = []
+        self.get_tags(entry.get('tags', []))
 
-    def _get_body(self, content):
+    def get_body(self, content):
         """
         convert the first item in the 'content' list
         """
         for c in content:
-            return self._html2markdown(c)
+            return self.html2markdown(c)
             break
 
-    def _html2markdown(self, text_obj):
+    def html2markdown(self, text_obj):
         """
         Convert HTML to Markdown, or pass through plaintext
         """
@@ -65,7 +66,7 @@ class FeedItem():
             text = text_obj.get('value')
         return text
 
-    def _get_image(self, media_content):
+    def get_image(self, media_content):
         """
         try to find a "cover" image for the entry
         """
@@ -79,27 +80,32 @@ class FeedItem():
             if m:
                 return m.group(1)
 
-    def _get_summary(self, summary):
+    def get_summary(self, summary):
         """
         convert to markdown
         """
-        return self._html2markdown(summary)
+        return self.html2markdown(summary)
 
-    def _get_tags(self, tags):
+    def get_tags(self, tags):
         """
         returns a de-duped, sanitized list of tags from the entry
         """
-        list = []
-        for t in tags:
-            tag = t.get('term').lower().replace(' ', '')
-            if tag == 'uncategorized':
+        for tag in tags:
+            t = self.sanitize_tag(tag.get('term'))
+            if t == 'uncategorized':
                 pass
             else:
-                if tag in list:
-                    pass
-                else:
-                    list.append(tag)
-        return list
+                self.add_tags([t])
+
+    def sanitize_tag(self, tag):
+        return tag.lower().replace(' ', '').replace('#', '')
+
+    def add_tags(self, tags):
+        for tag in tags:
+            t = self.sanitize_tag(tag)
+            if len(t) and t not in self.tags:
+                self.tags.append(t)
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -123,8 +129,8 @@ def main():
         print(f'image\t: {e.image}')
         print(f'tags\t: {", ".join(e.tags)}')
         print(f'time\t: {e.timestamp}')
-        print(f'body\t: {e.body}')
-        print(f'summary\t: {e.summary}')
+        # print(f'body\t: {e.body}')
+        # print(f'summary\t: {e.summary}')
         print()
-        break
+        # break
 main()
