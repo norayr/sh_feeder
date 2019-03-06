@@ -184,11 +184,11 @@ class PodClient():
         # fetch=False to prevent diaspy from loading the stream needlessly
         return diaspy.streams.Stream(client, fetch=False)
 
-    def post(self, message):
+    def post(self, message, via=None):
         """
         post a message
         """
-        self.stream.post(message)
+        self.stream.post(message, provider_display_name=via)
 
     def format_post(self, content, body=False, embed_image=False,
         no_branding=False, post_raw_link=False, summary=False):
@@ -217,7 +217,7 @@ class PodClient():
             summary=args.summary
         )
         print(message)
-        self.post(message)
+        self.post(message, via=args.via)
         return True
 
 def connect_db(file):
@@ -343,6 +343,10 @@ def parse_args():
     parser.add_argument('--username',
         help='The D* login username',
         required=True
+    )
+    parser.add_argument('--via',
+        help="Sets the 'posted via' text (default: 'pod_feeder_v2')",
+        default='pod_feeder_v2'
     )
     return parser.parse_args()
 
