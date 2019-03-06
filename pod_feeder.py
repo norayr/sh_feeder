@@ -7,6 +7,7 @@ class Feed():
     represents a parsed RSS/Atom feed
     """
     def __init__(self, feed_id=None, url=None):
+        self.feed_id = feed_id
         self.url = url
         self.feed = self.fetch(self.url)
         self.entries = self.feed.get('entries', [])
@@ -41,7 +42,11 @@ class FeedItem():
         self.title = entry.get('title')
         self.link = entry.get('link')
         self.image = self.get_image(entry.get('media_content', []))
-        self.timestamp = int(time.mktime(entry.get('published_parsed')))
+        self.timestamp = int(
+            time.mktime(
+                entry.get('published_parsed', time.gmtime())
+            )
+        )
         self.body = self.get_body(entry.get('content'))
         self.summary = self.get_summary(entry.get('summary_detail'))
         self.tags = []
@@ -51,19 +56,21 @@ class FeedItem():
         """
         convert the first item in the 'content' list
         """
-        for c in content:
-            return self.html2markdown(c)
-            break
+        if content is not None:
+            for c in content:
+                return self.html2markdown(c)
+                break
 
     def html2markdown(self, text_obj):
         """
         Convert HTML to Markdown, or pass through plaintext
         """
         text = None
-        if text_obj.get('type') == 'text/html':
-            text = html2text.html2text(text_obj.get('value'))
-        else:
-            text = text_obj.get('value')
+        if text_obj is not None:
+            if text_obj.get('type') == 'text/html':
+                text = html2text.html2text(text_obj.get('value'))
+            else:
+                text = text_obj.get('value')
         return text
 
     def get_image(self, media_content):
@@ -84,18 +91,20 @@ class FeedItem():
         """
         convert to markdown
         """
-        return self.html2markdown(summary)
+        if summary is not None:
+            return self.html2markdown(summary)
 
     def get_tags(self, tags):
         """
         returns a de-duped, sanitized list of tags from the entry
         """
-        for tag in tags:
-            t = self.sanitize_tag(tag.get('term'))
-            if t == 'uncategorized':
-                pass
-            else:
-                self.add_tags([t])
+        if tags is not None:
+            for tag in tags:
+                t = self.sanitize_tag(tag.get('term'))
+                if t == 'uncategorized':
+                    pass
+                else:
+                    self.add_tags([t])
 
     def sanitize_tag(self, tag):
         return tag.lower().replace(' ', '').replace('#', '')
