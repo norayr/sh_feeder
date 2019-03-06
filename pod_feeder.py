@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, feedparser, re, time
+import argparse, feedparser, html2text, re, time
 
 class Feed():
     """
@@ -43,10 +43,31 @@ class FeedItem():
         self.image = self._get_image(entry.get('media_content', []))
         self.tags = self._get_tags(entry.get('tags', []))
         self.timestamp = int(time.mktime(entry.get('published_parsed')))
+        self.body = self._get_body(entry.get('content'))
+        self.summary = self._get_summary(entry.get('summary_detail'))
+
+    def _get_body(self, content):
+        """
+        convert the first item in the 'content' list
+        """
+        for c in content:
+            return self._html2markdown(c)
+            break
+
+    def _html2markdown(self, text_obj):
+        """
+        Convert HTML to Markdown, or pass through plaintext
+        """
+        text = None
+        if text_obj.get('type') == 'text/html':
+            text = html2text.html2text(text_obj.get('value'))
+        else:
+            text = text_obj.get('value')
+        return text
 
     def _get_image(self, media_content):
         """
-        Try to find a "cover" image for the entry
+        try to find a "cover" image for the entry
         """
         if isinstance(media_content, list) and len(media_content):
             full_url = media_content[0].get('url')
@@ -57,6 +78,12 @@ class FeedItem():
             )
             if m:
                 return m.group(1)
+
+    def _get_summary(self, summary):
+        """
+        convert to markdown
+        """
+        return self._html2markdown(summary)
 
     def _get_tags(self, tags):
         """
@@ -73,7 +100,6 @@ class FeedItem():
                 else:
                     list.append(tag)
         return list
-
 
 def main():
     parser = argparse.ArgumentParser()
@@ -97,5 +123,8 @@ def main():
         print(f'image\t: {e.image}')
         print(f'tags\t: {", ".join(e.tags)}')
         print(f'time\t: {e.timestamp}')
+        print(f'body\t: {e.body}')
+        print(f'summary\t: {e.summary}')
+        print()
         break
 main()
