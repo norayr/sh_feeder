@@ -14,8 +14,10 @@ written (poorly) in perl and is no longer supported. Migrating to this version
 is recommended.
 
 ## Installation
-pod_feeder_v2 requires >= python 3.5. You can easily install the dependencies
-with pip:
+pod_feeder_v2 is developed and tested using python 3.5. Compatibility with
+< 3.5 is likely, but not guaranteed.
+
+You can easily install the dependencies with pip:
 
 `$ pip3 install -r requirements.txt`
 

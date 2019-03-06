@@ -1,0 +1,10 @@
+run:
+    image: python:3.5-alpine
+    script:
+    - pip3 install -r requirements.txt
+    - ./pod_feeder.py --database ':memory:'
+        --feed-id test
+        --feed-url https://www.eff.org/rss/updates.xml
+        --auto-tag foo
+        --auto-tag bar
+        --ignore-tag bar
