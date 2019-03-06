@@ -200,6 +200,9 @@ class PodClient():
 
     def format_post(self, content, body=False, embed_image=False,
         no_branding=False, post_raw_link=False, summary=False):
+        """
+        generate a post content string based on user inputs
+        """
         output = ''
         title_string = '### %s\n\n%s' if post_raw_link else '### [%s](%s)'
         output = output + \
@@ -207,11 +210,12 @@ class PodClient():
         if embed_image and content['image'] is not None:
             output = output + \
                 '![%s](%s)\n\n' % (content['image_title'], content['image'])
-        if summary:
+        if summary and content['summary'] is not None:
             output = output + '%s\n\n' % content['summary']
-        elif body:
+        elif body and content['body'] is not None:
             output = output + '%s\n\n' % content['body']
-        output = output + content['hashtags'] + '\n'
+        if len(content['hashtags']):
+            output = output + content['hashtags'] + '\n'
         if not no_branding:
             output = output + \
             "posted by [pod_feeder_v2](https://gitlab.com/brianodonnell/pod_feeder_v2/)"
@@ -225,7 +229,7 @@ class PodClient():
             summary=args.summary
         )
         print(message)
-        self.post(message, via=args.via, aspect_ids=args.aspect_id)
+        # self.post(message, via=args.via, aspect_ids=args.aspect_id)
         return True
 
 def connect_db(file):
@@ -283,11 +287,6 @@ def parse_args():
         action='append',
         default=[]
     )
-    parser.add_argument('--body',
-        help="Post the body (full text) of the feed item",
-        action='store_true',
-        default=False
-    )
     parser.add_argument('--category-tags',
         help="Attempt to automatically hashtagify RSS item 'categories'",
         action='store_true',
@@ -311,11 +310,6 @@ def parse_args():
         help="An arbitrary identifier for this feed",
         required=True)
     parser.add_argument('--feed-url', help="The feed URL", required=True)
-    parser.add_argument('--fetch-only',
-        help="Don't publish to Diaspora, queue the new feed items for later",
-        action='store_true',
-        default=False
-    )
     parser.add_argument('--ignore-tag',
         help="Hashtags to filter out. May be specified multiple times",
         action='append',
@@ -331,21 +325,12 @@ def parse_args():
         action='store_true',
         default=False
     )
-    parser.add_argument('--password',
-        help='The D* user password',
-        required=True
-    )
     parser.add_argument('--pod-url',
         help='The pod URL',
         required=True
     )
     parser.add_argument('--post-raw-link',
         help="Post the raw link instead of hyperlinking the article title",
-        action='store_true',
-        default=False
-    )
-    parser.add_argument('--summary',
-        help="Post the summary text of the feed item",
         action='store_true',
         default=False
     )
@@ -356,11 +341,33 @@ def parse_args():
     )
     parser.add_argument('--username',
         help='The D* login username',
-        required=True
+        default='podmin'
     )
     parser.add_argument('--via',
         help="Sets the 'posted via' text (default: 'pod_feeder_v2')",
         default='pod_feeder_v2'
+    )
+    # allow full body or summary, not both
+    post_content = parser.add_mutually_exclusive_group()
+    post_content.add_argument('--summary',
+        help="Post the summary text of the feed item",
+        action='store_true',
+        default=False
+    )
+    post_content.add_argument('--body',
+        help="Post the body (full text) of the feed item",
+        action='store_true',
+        default=False
+    )
+    # we don't need/want a password when --fetch-only is used and vice versa
+    fetch_only = parser.add_mutually_exclusive_group(required=True)
+    fetch_only.add_argument('--password',
+        help='The D* user password',
+    )
+    fetch_only.add_argument('--fetch-only',
+        help="Don't publish to Diaspora, queue the new feed items for later",
+        action='store_true',
+        default=False
     )
     return parser.parse_args()
 
