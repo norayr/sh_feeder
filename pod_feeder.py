@@ -39,9 +39,12 @@ class FeedItem():
     def __init__(self, entry):
         self.posted = False
         self.guid = entry.get('id')
+        self.image = self.get_image(
+            entry.get('media_content', []),
+            entry.get('links', [])
+        )
         self.title = entry.get('title')
         self.link = entry.get('link')
-        self.image = self.get_image(entry.get('media_content', []))
         self.timestamp = int(
             time.mktime(
                 entry.get('published_parsed', time.gmtime())
@@ -73,19 +76,23 @@ class FeedItem():
                 text = text_obj.get('value')
         return text
 
-    def get_image(self, media_content):
+    def get_image(self, media_content, links):
         """
         try to find a "cover" image for the entry
         """
         if isinstance(media_content, list) and len(media_content):
-            full_url = media_content[0].get('url')
-            m = re.match(
-                '(https?:\/\/.*\/.*\.(jpg|png))',
-                full_url,
-                re.IGNORECASE
-            )
-            if m:
-                return m.group(1)
+            for m in media_content:
+                m = re.match(
+                    '(https?:\/\/.*\/.*\.(jpg|png))',
+                    m.get('url', ''),
+                    re.IGNORECASE
+                )
+                if m:
+                    return m.group(1)
+        if isinstance(links, list) and len(links):
+            for l in links:
+                if re.match('image\/', l.get('type', '')):
+                    return l.get('href')
 
     def get_summary(self, summary):
         """
@@ -141,5 +148,5 @@ def main():
         # print(f'body\t: {e.body}')
         # print(f'summary\t: {e.summary}')
         print()
-        # break
+        break
 main()
