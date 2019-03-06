@@ -199,6 +199,10 @@ def main():
         help="The SQLite file to store feed data (default: 'feed.db')",
         default='feed.db'
     )
+    parser.add_argument('--debug',
+        help="Show debugging output",
+        action='store_true'
+    )
     parser.add_argument('--feed-id',
         help="An arbitrary identifier for this feed",
         required=True)
@@ -221,19 +225,19 @@ def main():
         url=args.feed_url
     )
     db = connect_db(args.database)
-
     feed.load_db(db)
-    for e in feed.items:
 
-        print()
-        print('guid\t: %s' % e.guid)
-        print('title\t: %s' % e.title)
-        print('link\t: %s' % e.link)
-        print('image\t: %s' % e.image)
-        print('tags\t: %s' % ", ".join(e.tags))
-        print('time\t: %s' % e.timestamp)
-        # print('body\t: %s' % e.body)
-        # print('summary\t: %s' % e.summary)
-        print()
-        break
+    if args.debug:
+        for e in feed.items:
+            print()
+            print('guid\t: %s' % e.guid)
+            print('title\t: %s' % e.title)
+            print('link\t: %s' % e.link)
+            print('image\t: %s' % e.image)
+            print('tags\t: %s' % ", ".join(e.tags))
+            print('time\t: %s' % e.timestamp)
+            # print('body\t: %s' % e.body)
+            # print('summary\t: %s' % e.summary)
+            print()
+            break
 main()

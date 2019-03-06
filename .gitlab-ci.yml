@@ -8,3 +8,4 @@ run:
         --auto-tag foo
         --auto-tag bar
         --ignore-tag bar
+        --debug
