@@ -71,7 +71,8 @@ class FeedItem():
         self.guid = entry.get('id')
         self.image = self.get_image(
             entry.get('media_content', []),
-            entry.get('links', [])
+            entry.get('links', []),
+            entry.get('content', []),
         )
         self.title = entry.get('title')
         self.link = entry.get('link')
@@ -81,7 +82,6 @@ class FeedItem():
         self.tags = []
         if category_tags:
             self.get_tags(entry.get('tags', []))
-
     def get_body(self, content):
         """
         convert the first item in the 'content' list
@@ -91,7 +91,7 @@ class FeedItem():
                 return self.html2markdown(c).strip()
                 break
 
-    def get_image(self, media_content, links):
+    def get_image(self, media_content, links, content):
         """
         try to find a "cover" image for the entry
         """
@@ -108,6 +108,15 @@ class FeedItem():
             for link in links:
                 if re.match('image\/', link.get('type', '')):
                     return link.get('href')
+        if isinstance(content, list) and len(content):
+            for c in content:
+                m = re.search(
+                    '(https?:\/\/[^\'"]*\.(gif|jpg|jpeg|png))',
+                    c.get('value'),
+                    re.IGNORECASE
+                )
+                if m:
+                    return m.group(1)
 
     def get_summary(self, summary):
         """
