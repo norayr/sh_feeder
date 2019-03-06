@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, feedparser, html2text, os.path, re, sqlite3, time
+import argparse, diaspy, feedparser, html2text, os.path, re, sqlite3, time
 
 class Feed():
     """
@@ -162,6 +162,35 @@ class FeedItem():
             if t in self.tags:
                 self.tags.remove(t)
 
+class PodClient():
+    """
+    handle interactions with the pod
+    """
+    def __init__(self, url=None, username=None, password=None):
+        self.url = url
+        self.username = username
+        self.password = password
+        self.stream = self.connect()
+
+    def connect(self):
+        """
+        login and return a Stream object
+        """
+        client = diaspy.connection.Connection(
+            pod=self.url,
+            username=self.username,
+            password=self.password
+        )
+        client.login()
+        # fetch=False to prevent diaspy from loading the stream needlessly
+        return diaspy.streams.Stream(client, fetch=False)
+
+    def publish(self, message):
+        """
+        post a message
+        """
+        self.stream.post(message)
+
 def connect_db(file):
     # check to see if a new database needs to be initialized
     init_db = False if os.path.isfile(file) else True
@@ -217,6 +246,23 @@ def main():
         action='append',
         default=[]
     )
+    parser.add_argument('--limit',
+        help='Only post n items per script run, to prevent post-spamming',
+        type=int,
+        default=-1
+    )
+    parser.add_argument('--password',
+        help='The D* user password',
+        required=True
+    )
+    parser.add_argument('--pod-url',
+        help='The pod URL',
+        required=True
+    )
+    parser.add_argument('--username',
+        help='The D* login username',
+        required=True
+    )
     args = parser.parse_args()
     feed = Feed(
         auto_tags=args.auto_tag,
@@ -227,17 +273,24 @@ def main():
     db = connect_db(args.database)
     feed.load_db(db)
 
-    if args.debug:
-        for e in feed.items:
-            print()
-            print('guid\t: %s' % e.guid)
-            print('title\t: %s' % e.title)
-            print('link\t: %s' % e.link)
-            print('image\t: %s' % e.image)
-            print('tags\t: %s' % ", ".join(e.tags))
-            print('time\t: %s' % e.timestamp)
-            # print('body\t: %s' % e.body)
-            # print('summary\t: %s' % e.summary)
-            print()
-            break
+    client = PodClient(
+        url=args.pod_url,
+        username=args.username,
+        password=args.password
+    )
+    # client.post("This is a test")
+
+    # if args.debug:
+    #     for e in feed.items:
+    #         print()
+    #         print('guid\t: %s' % e.guid)
+    #         print('title\t: %s' % e.title)
+    #         print('link\t: %s' % e.link)
+    #         print('image\t: %s' % e.image)
+    #         print('tags\t: %s' % ", ".join(e.tags))
+    #         print('time\t: %s' % e.timestamp)
+    #         # print('body\t: %s' % e.body)
+    #         # print('summary\t: %s' % e.summary)
+    #         print()
+    #         break
 main()
