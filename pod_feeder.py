@@ -275,6 +275,8 @@ def publish_items(db, client, args=None):
         query = query + ' LIMIT %s' % args.limit
     timeout = int(time.time() - args.timeout * 3600)
     for row in db.execute(query, (args.feed_id, timeout)):
+        if not args.quiet:
+            print("Publishing %s\t%s" % (args.feed_id, row['guid']));
         if client.publish(row, args):
             db.execute(
                 "UPDATE feeds SET posted = 1 WHERE guid = ?",
@@ -306,11 +308,6 @@ def parse_args():
     parser.add_argument('--database',
         help="The SQLite file to store feed data (default: 'feed.db')",
         default='feed.db'
-    )
-    parser.add_argument('--debug',
-        help="Show debugging output",
-        action='store_true',
-        default=False
     )
     parser.add_argument('--embed-image',
         help="Embed an image in the post if a link exists",
@@ -377,6 +374,17 @@ def parse_args():
     )
     fetch_only.add_argument('--fetch-only',
         help="Don't publish to Diaspora, queue the new feed items for later",
+        action='store_true',
+        default=False
+    )
+    verbosity = parser.add_mutually_exclusive_group()
+    verbosity.add_argument('--debug',
+        help="Show debugging output",
+        action='store_true',
+        default=False
+    )
+    verbosity.add_argument('--quiet',
+        help="Suppress normal output",
         action='store_true',
         default=False
     )
