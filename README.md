@@ -27,7 +27,8 @@ yours is called).
 
 2. The `--title-tags` and `--url-tags` arguments have not been carried forward
 because in practice they generally create lots of spurious tags, and the
-'stop words' feature is difficult to implement.
+'stop words' feature is difficult to implement. `--user-agent` is not currently
+implemented because the diaspy library does not support it.
 
 3. Several new options, `--summary`, `--debug`, and `--quiet` have been added.
 
