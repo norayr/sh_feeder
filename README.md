@@ -24,6 +24,6 @@ with pip:
 you can point the script at your existing `feed.db` file (or whatever
 yours is called).
 
-2. the `--title-tags` argument has not been carried forward because in practice
-it generally creates lots of spurious tags, and the 'stop words' feature is
-hard to implement.
+2. the `--title-tags` and `--url-tags` arguments have not been carried forward
+because in practice they generally create lots of spurious tags, and the
+'stop words' feature is difficult to implement.
