@@ -6,7 +6,9 @@ class Feed():
     """
     represents a parsed RSS/Atom feed
     """
-    def __init__(self, feed_id=None, url=None):
+    def __init__(self, feed_id=None, url=None, auto_tags=[], ignore_tags=[]):
+        self.auto_tags = auto_tags
+        self.ignore_tags = ignore_tags
         self.feed_id = feed_id
         self.url = url
         self.feed = self.fetch(self.url)
@@ -19,7 +21,10 @@ class Feed():
         """
         items = []
         for e in self.entries:
-            items.append(FeedItem(e))
+            item = FeedItem(e)
+            item.add_tags(self.auto_tags)
+            item.remove_tags(self.ignore_tags)
+            items.append(item)
         return items
 
     def fetch(self, url=None):
@@ -148,6 +153,15 @@ class FeedItem():
             if len(t) and t not in self.tags:
                 self.tags.append(t)
 
+    def remove_tags(self, tags):
+        """
+        remove a list of tags from self.tags
+        """
+        for tag in tags:
+            t = self.sanitize_tag(tag)
+            if t in self.tags:
+                self.tags.remove(t)
+
 def connect_db(file):
     # check to see if a new database needs to be initialized
     init_db = False if os.path.isfile(file) else True
@@ -165,6 +179,11 @@ def connect_db(file):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--auto-tag',
+        help="Hashtags to add to all posts. May be specified multiple times",
+        action='append',
+        default=[]
+    )
     parser.add_argument('--database',
         help="The SQLite file to store feed data (default: 'feed.db')",
         default='feed.db'
@@ -178,8 +197,18 @@ def main():
         action='store_true',
         default=False
     )
+    parser.add_argument('--ignore-tag',
+        help="Hashtags to filter out. May be specified multiple times",
+        action='append',
+        default=[]
+    )
     args = parser.parse_args()
-    feed = Feed(feed_id=args.feed_id, url=args.feed_url)
+    feed = Feed(
+        auto_tags=args.auto_tag,
+        feed_id=args.feed_id,
+        ignore_tags=args.ignore_tag,
+        url=args.feed_url
+    )
     db = connect_db(args.database)
 
     feed.load_db(db)
