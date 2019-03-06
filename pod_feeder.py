@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, feedparser, html2text, re, time
+import argparse, feedparser, html2text, os.path, re, sqlite3, time
 
 class Feed():
     """
@@ -31,6 +31,29 @@ class Feed():
         else:
             f = feedparser.parse(url)
         return f
+
+    def load_db(self, conn):
+        """
+        updates feeds table with new items
+        """
+        for i in self.items:
+            # check to see if the item is already in the db
+            row = conn.execute(
+                "SELECT guid FROM feeds WHERE guid = ?", (i.guid,)
+            ).fetchone()
+            if row is None:
+                hashtags = ' '.join(i.tags)
+                # if not, insert it
+                conn.execute(
+                    "INSERT INTO feeds(guid, feed_id, title, body, link, \
+                    image, image_title, hashtags, posted, timestamp) \
+                    VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        i.guid, self.feed_id, i.title, i.body, i.link, i.image,
+                        'image', hashtags, '0', i.timestamp
+                    )
+                )
+                conn.commit()
 
 class FeedItem():
     """
@@ -66,7 +89,7 @@ class FeedItem():
 
     def html2markdown(self, text_obj):
         """
-        Convert HTML to Markdown, or pass through plaintext
+        convert HTML to Markdown, or pass through plaintext
         """
         text = None
         if text_obj is not None:
@@ -108,23 +131,44 @@ class FeedItem():
         if tags is not None:
             for tag in tags:
                 t = self.sanitize_tag(tag.get('term'))
-                if t == 'uncategorized':
-                    pass
-                else:
-                    self.add_tags([t])
+                self.add_tags([t])
 
     def sanitize_tag(self, tag):
-        return tag.lower().replace(' ', '').replace('#', '')
+        """
+        remove spaces, lowercase, and add a '#'
+        """
+        return '#' + tag.lower().replace(' ', '').replace('#', '')
 
     def add_tags(self, tags):
+        """
+        add a list of tags to self.tags
+        """
         for tag in tags:
             t = self.sanitize_tag(tag)
             if len(t) and t not in self.tags:
                 self.tags.append(t)
 
+def connect_db(file):
+    # check to see if a new database needs to be initialized
+    init_db = False if os.path.isfile(file) else True
+    conn = sqlite3.connect(file)
+    if init_db:
+        # create the feeds table
+        conn.execute(
+            'CREATE TABLE feeds(guid VARCHAR(255) PRIMARY KEY, \
+            feed_id VARCHAR(127), title VARCHAR(255), link VARCHAR(255), \
+            image VARCHAR(255), image_title VARCHAR(255), \
+            hashtags VARCHAR(255), timestamp INTEGER(10), posted INTEGER(1), \
+            body VARCHAR(10000))'
+        )
+    return conn
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--database',
+        help="The SQLite file to store feed data (default: 'feed.db')",
+        default='feed.db'
+    )
     parser.add_argument('--feed-id',
         help="An arbitrary identifier for this feed",
         required=True)
@@ -135,9 +179,12 @@ def main():
         default=False
     )
     args = parser.parse_args()
-    feed = Feed(url=args.feed_url)
+    feed = Feed(feed_id=args.feed_id, url=args.feed_url)
+    db = connect_db(args.database)
 
+    feed.load_db(db)
     for e in feed.items:
+
         print()
         print(f'guid\t: {e.guid}')
         print(f'title\t: {e.title}')
