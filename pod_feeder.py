@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import argparse, feedparser, re
+import argparse, feedparser, re, time
 
 class Feed():
     """
@@ -42,6 +42,7 @@ class FeedItem():
         self.link = entry.get('link')
         self.image = self._get_image(entry.get('media_content', []))
         self.tags = self._get_tags(entry.get('tags', []))
+        self.timestamp = int(time.mktime(entry.get('published_parsed')))
 
     def _get_image(self, media_content):
         """
@@ -59,7 +60,7 @@ class FeedItem():
 
     def _get_tags(self, tags):
         """
-        returns a sanitized list of tags from the entry
+        returns a de-duped, sanitized list of tags from the entry
         """
         list = []
         for t in tags:
@@ -94,7 +95,7 @@ def main():
         print(f'title\t: {e.title}')
         print(f'link\t: {e.link}')
         print(f'image\t: {e.image}')
-        print(f'tags\t: {e.tags}')
-        print()
+        print(f'tags\t: {", ".join(e.tags)}')
+        print(f'time\t: {e.timestamp}')
         break
 main()
