@@ -11,4 +11,4 @@ run:
         --ignore-tag bar
         --fetch-only
         --debug
-    - ./clean_db feed.db
+    - ./clean_db.py feed.db
