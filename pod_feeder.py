@@ -226,14 +226,14 @@ def main():
     for e in feed.items:
 
         print()
-        print(f'guid\t: {e.guid}')
-        print(f'title\t: {e.title}')
-        print(f'link\t: {e.link}')
-        print(f'image\t: {e.image}')
-        print(f'tags\t: {", ".join(e.tags)}')
-        print(f'time\t: {e.timestamp}')
-        # print(f'body\t: {e.body}')
-        # print(f'summary\t: {e.summary}')
+        print('guid\t: %s' % e.guid)
+        print('title\t: %s' % e.title)
+        print('link\t: %s' % e.link)
+        print('image\t: %s' % e.image)
+        print('tags\t: %s' % ", ".join(e.tags))
+        print('time\t: %s' % e.timestamp)
+        # print('body\t: %s' % e.body)
+        # print('summary\t: %s' % e.summary)
         print()
         break
 main()
