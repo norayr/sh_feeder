@@ -1,8 +1,6 @@
 run:
     image: python:3.5-alpine
     script:
-    - echo $K8S_SECRET_POD_FEEDER_TEST_POD
-    - echo $CI_JOB_ID
     - pip3 install -r requirements.txt
     - ./pod_feeder.py
         --pod-url   $K8S_SECRET_POD_FEEDER_TEST_POD
@@ -16,6 +14,7 @@ run:
         --auto-tag bar
         --ignore-tag bar
         --category-tags
+        --embed-image
         --summary
         --via gitlb-ci
         --limit 1
