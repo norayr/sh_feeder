@@ -1,7 +1,7 @@
 run:
     image: python:3.5-alpine
     script:
-    - pip3 install -r requirements.txt
+    - pip3 install -r requirements.txt -q
     - ./pod_feeder.py
         --pod-url   $K8S_SECRET_POD_FEEDER_TEST_POD
         --username  $K8S_SECRET_POD_FEEDER_TEST_USER
