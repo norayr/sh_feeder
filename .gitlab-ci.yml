@@ -8,7 +8,7 @@ run:
         --password  $K8S_SECRET_POD_FEEDER_TEST_PASSWORD
         --aspect-id $K8S_SECRET_POD_FEEDER_TEST_ASPECT_ID
         --database feed.db
-        --feed-id test
+        --feed-id eff
         --feed-url https://www.eff.org/rss/updates.xml
         --auto-tag foo
         --auto-tag bar
@@ -17,6 +17,18 @@ run:
         --embed-image
         --summary
         --via gitlb-ci
+        --limit 1
+        --debug
+    - ./pod_feeder.py
+        --pod-url   $K8S_SECRET_POD_FEEDER_TEST_POD
+        --username  $K8S_SECRET_POD_FEEDER_TEST_USER
+        --password  $K8S_SECRET_POD_FEEDER_TEST_PASSWORD
+        --aspect-id $K8S_SECRET_POD_FEEDER_TEST_ASPECT_ID
+        --database feed.db
+        --feed-id gitlab
+        --feed-url https://gitlab.com/brianodonnell/pod_feeder_v2/commits/master?format=atom
+        --embed-image
+        --body
         --limit 1
         --debug
     - ./clean_db.py feed.db
