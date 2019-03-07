@@ -82,6 +82,7 @@ class FeedItem():
         self.tags = []
         if category_tags:
             self.get_tags(entry.get('tags', []))
+
     def get_body(self, content):
         """
         convert the first item in the 'content' list
@@ -299,8 +300,8 @@ def parse_args():
     """
     parser = argparse.ArgumentParser()
     parser.add_argument('--aspect-id',
-        help="Aspects to share with. \
-            May specified multiple times (default: 'public')",
+        help="Numerical aspect ID to share with. \
+            May be specified multiple times (default: 'public')",
         action='append',
         default=[]
     )
@@ -310,12 +311,12 @@ def parse_args():
         default=[]
     )
     parser.add_argument('--category-tags',
-        help="Attempt to automatically hashtagify RSS item 'categories'",
+        help="Automatically hashtagify RSS item 'categories' if any",
         action='store_true',
         default=False
     )
     parser.add_argument('--database',
-        help="The SQLite file to store feed data (default: 'feed.db')",
+        help="The file to store feed data (default: 'feed.db')",
         default='feed.db'
     )
     parser.add_argument('--embed-image',
@@ -324,11 +325,11 @@ def parse_args():
         default=False
     )
     parser.add_argument('--feed-id',
-        help="An arbitrary identifier for this feed",
+        help="An arbitrary label for this feed",
         required=True)
     parser.add_argument('--feed-url', help="The feed URL", required=True)
     parser.add_argument('--ignore-tag',
-        help="Hashtags to filter out. May be specified multiple times",
+        help="Hashtag to filter out. May be specified multiple times",
         action='append',
         default=[]
     )
@@ -338,7 +339,7 @@ def parse_args():
         default=-1
     )
     parser.add_argument('--no-branding',
-        help="Do not include 'posted via pod_feeder_v2' footer to posts",
+        help="Do not include 'via pod_feeder_v2' footer to posts",
         action='store_true',
         default=False
     )
@@ -352,7 +353,7 @@ def parse_args():
         default=False
     )
     parser.add_argument('--timeout',
-        help='How many hours to keep attempting failed posts (default 72)',
+        help='How many hours to keep re-trying failed posts (default 72)',
         type=int,
         default=72
     )
@@ -361,7 +362,7 @@ def parse_args():
         default='podmin'
     )
     parser.add_argument('--via',
-        help="Sets the 'posted via' text (default: 'pod_feeder_v2')",
+        help="Sets the 'posted via' footer text (default: 'pod_feeder_v2')",
         default='pod_feeder_v2'
     )
     # allow full body or summary, not both
@@ -371,8 +372,8 @@ def parse_args():
         action='store_true',
         default=False
     )
-    post_content.add_argument('--body',
-        help="Post the body (full text) of the feed item",
+    post_content.add_argument('--full', '--body',
+        help="Post the full text of the feed item",
         action='store_true',
         default=False
     )

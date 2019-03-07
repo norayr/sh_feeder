@@ -44,38 +44,36 @@ usage: pod_feeder.py [-h] [--aspect-id ASPECT_ID] [--auto-tag AUTO_TAG]
                      --feed-id FEED_ID --feed-url FEED_URL
                      [--ignore-tag IGNORE_TAG] [--limit LIMIT] [--no-branding]
                      --pod-url POD_URL [--post-raw-link] [--timeout TIMEOUT]
-                     [--username USERNAME] [--via VIA] [--summary | --body]
+                     [--username USERNAME] [--via VIA] [--summary | --full]
                      (--password PASSWORD | --fetch-only) [--debug | --quiet]
 
 optional arguments:
+  -h, --help            show this help message and exit
   --aspect-id ASPECT_ID
-                        Aspects to share with. May specified multiple times
-                        (default: 'public')
+                        Numerical aspect ID to share with. May be specified
+                        multiple times (default: 'public')
   --auto-tag AUTO_TAG   Hashtags to add to all posts. May be specified
                         multiple times
-  --category-tags       Attempt to automatically hashtagify RSS item
-                        'categories'
-  --database DATABASE   The SQLite file to store feed data (default:
-                        'feed.db')
+  --category-tags       Automatically hashtagify RSS item 'categories' if any
+  --database DATABASE   The file to store feed data (default: 'feed.db')
   --embed-image         Embed an image in the post if a link exists
-  --feed-id FEED_ID     An arbitrary identifier for this feed
+  --feed-id FEED_ID     An arbitrary label for this feed
   --feed-url FEED_URL   The feed URL
   --ignore-tag IGNORE_TAG
-                        Hashtags to filter out. May be specified multiple
-                        times
+                        Hashtag to filter out. May be specified multiple times
   --limit LIMIT         Only post n items per script run, to prevent post-
                         spamming
-  --no-branding         Do not include 'posted via pod_feeder_v2' footer to
-                        posts
+  --no-branding         Do not include 'via pod_feeder_v2' footer to posts
   --pod-url POD_URL     The pod URL
   --post-raw-link       Post the raw link instead of hyperlinking the article
                         title
-  --timeout TIMEOUT     How many hours to keep attempting failed posts
-                        (default 72)
+  --timeout TIMEOUT     How many hours to keep re-trying failed posts (default
+                        72)
   --username USERNAME   The D* login username
-  --via VIA             Sets the 'posted via' text (default: 'pod_feeder_v2')
+  --via VIA             Sets the 'posted via' footer text (default:
+                        'pod_feeder_v2')
   --summary             Post the summary text of the feed item
-  --body                Post the body (full text) of the feed item
+  --full, --body        Post the full text of the feed item
   --password PASSWORD   The D* user password
   --fetch-only          Don't publish to Diaspora, queue the new feed items
                         for later
