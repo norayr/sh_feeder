@@ -69,11 +69,7 @@ class FeedItem():
     def __init__(self, entry, category_tags=False):
         self.posted = False
         self.guid = entry.get('id')
-        self.image = self.get_image(
-            entry.get('media_content', []),
-            entry.get('links', []),
-            entry.get('content', []),
-        )
+        self.image = self.get_image(entry)
         self.title = entry.get('title')
         self.link = entry.get('link')
         self.timestamp = int(time.time())
@@ -92,32 +88,47 @@ class FeedItem():
                 return self.html2markdown(c).strip()
                 break
 
-    def get_image(self, media_content, links, content):
+    def get_image(self, entry):
         """
-        try to find a "cover" image for the entry
+        try to find a "cover" image for the entry, wherever it may be hiding
         """
+        media_content = entry.get('media_content')
         if isinstance(media_content, list) and len(media_content):
             for media in media_content:
-                m = re.match(
-                    '(https?:\/\/.*\/.*\.(gif|jpg|jpeg|png))',
-                    media.get('url', ''),
-                    re.IGNORECASE
-                )
-                if m:
-                    return m.group(1)
+                m = self.find_image_link(media.get('url', ''))
+                if m is not None:
+                    return m
+        links = entry.get('links')
         if isinstance(links, list) and len(links):
             for link in links:
                 if re.match('image\/', link.get('type', '')):
                     return link.get('href')
+        content = entry.get('content')
         if isinstance(content, list) and len(content):
             for c in content:
-                m = re.search(
-                    '(https?:\/\/[^\'"]*\.(gif|jpg|jpeg|png))',
-                    c.get('value'),
-                    re.IGNORECASE
-                )
-                if m:
-                    return m.group(1)
+                m = self.find_image_link(c.get('value', ''))
+                if m is not None:
+                    return m
+        summary_detail = entry.get('summary_detail')
+        m = self.find_image_link(summary_detail.get('value', ''))
+        if m is not None:
+            return m
+        summary = entry.get('summary')
+        m = self.find_image_link(summary)
+        if m is not None:
+            return m
+
+    def find_image_link(self, content):
+        """
+        search a string for an embedded image link
+        """
+        m = re.search(
+            '(https?:\/\/[^\'"]*\.(gif|jpg|jpeg|png))',
+            content,
+            re.IGNORECASE
+        )
+        if m:
+            m.group(1)
 
     def get_summary(self, summary):
         """
