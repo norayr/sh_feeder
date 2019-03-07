@@ -129,7 +129,7 @@ class FeedItem():
             re.IGNORECASE
         )
         if m:
-            m.group(1)
+            return m.group(1)
 
     def get_summary(self, summary):
         """
@@ -233,14 +233,14 @@ class PodClient():
             title_string = \
                 '### [%s](%s)\n\n' % (
                     content['title'],
-                    urllib.parse.quote(content['link'])
+                    urllib.parse.quote(content['link'], safe='/:')
                 )
         output = output + title_string
         if embed_image and content['image'] is not None:
             output = output + \
                 '![%s](%s)\n\n' % (
                     content['image_title'],
-                    urllib.parse.quote(content['image'])
+                    urllib.parse.quote(content['image'], safe='/:')
                 )
         if summary and content['summary'] is not None:
             output = output + '%s\n\n' % content['summary']
