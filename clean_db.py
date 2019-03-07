@@ -24,4 +24,4 @@ conn.execute('VACUUM')
 new_size = os.path.getsize(file)
 percent = ((old_size - new_size) / old_size) * 100.0
 print("New size:\t%s bytes" % new_size)
-print("Recovered:\t%s%%" % percent)
+print("Recovered:\t%0.02f%%" % percent)
