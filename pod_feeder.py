@@ -236,7 +236,7 @@ class PodClient():
         generate message text and post it to D*
         """
         message = self.format_post(content,
-            body=args.body,
+            body=args.full,
             embed_image=args.embed_image,
             post_raw_link=args.post_raw_link,
             summary=args.summary
