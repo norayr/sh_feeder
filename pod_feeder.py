@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse, diaspy, feedparser, html2text, os.path, re, sqlite3, time
+import urllib.parse
 
 class Feed():
     """
@@ -225,12 +226,22 @@ class PodClient():
         generate a post content string based on user inputs
         """
         output = ''
-        title_string = '### %s\n\n%s' if post_raw_link else '### [%s](%s)'
-        output = output + \
-            title_string % (content['title'], content['link']) + '\n\n'
+        if post_raw_link:
+            title_string = \
+                '### %s\n\n%s\n\n' % ((content['title'], content['link']))
+        else:
+            title_string = \
+                '### [%s](%s)\n\n' % (
+                    content['title'],
+                    urllib.parse.quote(content['link'])
+                )
+        output = output + title_string
         if embed_image and content['image'] is not None:
             output = output + \
-                '![%s](%s)\n\n' % (content['image_title'], content['image'])
+                '![%s](%s)\n\n' % (
+                    content['image_title'],
+                    urllib.parse.quote(content['image'])
+                )
         if summary and content['summary'] is not None:
             output = output + '%s\n\n' % content['summary']
         elif body and content['body'] is not None:
