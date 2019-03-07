@@ -28,7 +28,7 @@ run:
         --feed-id gitlab
         --feed-url $CI_PROJECT_URL/commits/$CI_COMMIT_REF_NAME?format=atom
         --embed-image
-        --body
+        --full
         --limit 1
         --debug
     - ./clean_db.py feed.db
