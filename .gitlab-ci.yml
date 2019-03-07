@@ -26,7 +26,7 @@ run:
         --aspect-id $K8S_SECRET_POD_FEEDER_TEST_ASPECT_ID
         --database feed.db
         --feed-id gitlab
-        --feed-url https://gitlab.com/brianodonnell/pod_feeder_v2/commits/master?format=atom
+        --feed-url $CI_PROJECT_URL/commits/$CI_COMMIT_REF_NAME?format=atom
         --embed-image
         --body
         --limit 1
