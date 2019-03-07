@@ -150,10 +150,9 @@ class FeedItem():
 
     def sanitize_tag(self, tag):
         """
-        remove spaces, lowercase, and add a '#'
+        remove non-word characters and prepend a '#'
         """
-        return '#' + \
-            re.sub(r'\W', '', tag).lower().replace(' ', '').replace('#', '')
+        return '#' + re.sub(r'\W', '', tag).lower()
 
     def add_tags(self, tags):
         """
