@@ -152,7 +152,8 @@ class FeedItem():
         """
         remove spaces, lowercase, and add a '#'
         """
-        return '#' + tag.lower().replace(' ', '').replace('#', '')
+        return '#' + \
+            re.sub(r'\W', '', tag).lower().replace(' ', '').replace('#', '')
 
     def add_tags(self, tags):
         """
