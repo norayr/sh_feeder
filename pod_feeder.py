@@ -8,9 +8,10 @@ class Feed():
     represents a parsed RSS/Atom feed
     """
     def __init__(self, feed_id=None, url=None, auto_tags=[],
-        category_tags=False, ignore_tags=[]):
+        category_tags=False, ignore_tags=[], debug=False):
         self.auto_tags = auto_tags
         self.category_tags = category_tags
+        self.debug = debug
         self.ignore_tags = ignore_tags
         self.feed_id = feed_id
         self.url = url
@@ -28,6 +29,17 @@ class Feed():
             item.add_tags(self.auto_tags)
             item.remove_tags(self.ignore_tags)
             items.append(item)
+            if self.debug:
+                print()
+                print('guid\t: %s' % item.guid)
+                print('title\t: %s' % item.title)
+                print('link\t: %s' % item.link)
+                print('image\t: %s' % item.image)
+                print('tags\t: %s' % ", ".join(item.tags))
+                print('time\t: %s' % item.timestamp)
+                # print('body\t: %s' % item.body)
+                # print('summary\t: %s' % item.summary)
+                print()
         return items
 
     def fetch(self, url=None):
@@ -430,7 +442,8 @@ def main():
         category_tags=args.category_tags,
         feed_id=args.feed_id,
         ignore_tags=args.ignore_tag,
-        url=args.feed_url
+        url=args.feed_url,
+        debug=args.debug
     )
     # establish a database connection
     db = connect_db(args.database)
@@ -446,17 +459,4 @@ def main():
         publish_items(db, client, args=args)
     db.close()
 
-    if args.debug:
-        for e in feed.items:
-            print()
-            print('guid\t: %s' % e.guid)
-            print('title\t: %s' % e.title)
-            print('link\t: %s' % e.link)
-            print('image\t: %s' % e.image)
-            print('tags\t: %s' % ", ".join(e.tags))
-            print('time\t: %s' % e.timestamp)
-            # print('body\t: %s' % e.body)
-            # print('summary\t: %s' % e.summary)
-            print()
-            break
 main()
