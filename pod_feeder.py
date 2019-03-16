@@ -273,7 +273,8 @@ class PodClient():
             body=args.full,
             embed_image=args.embed_image,
             post_raw_link=args.post_raw_link,
-            summary=args.summary
+            summary=args.summary,
+            no_branding=args.no_branding,
         )
         self.post(message, via=args.via, aspect_ids=args.aspect_id)
         return True
