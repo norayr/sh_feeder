@@ -245,14 +245,14 @@ class PodClient():
             title_string = \
                 '### [%s](%s)\n\n' % (
                     content['title'],
-                    urllib.parse.quote(content['link'], safe='/:')
+                    urllib.parse.quote(content['link'], safe='/:#')
                 )
         output = output + title_string
         if embed_image and content['image'] is not None:
             output = output + \
                 '![%s](%s)\n\n' % (
                     content['image_title'],
-                    urllib.parse.quote(content['image'], safe='/:')
+                    urllib.parse.quote(content['image'], safe='/:#')
                 )
         if summary and content['summary'] is not None:
             output = output + '%s\n\n' % content['summary']
