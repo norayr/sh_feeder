@@ -32,3 +32,11 @@ run:
         --limit 1
         --debug
     - ./clean_db.py feed.db
+
+formatting:
+    # Black requires python >= 3.6
+    image: python:alpine
+    allow_failure: true
+    script:
+    - pip3 install -q black
+    - black --check .
