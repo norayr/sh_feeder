@@ -101,7 +101,7 @@ class FeedItem:
 
     def __init__(self, entry, category_tags=False):
         self.posted = False
-        self.guid = entry.get("id")
+        self.guid = self.get_id(entry)
         self.image = self.get_image(entry)
         self.title = entry.get("title")
         self.link = entry.get("link")
@@ -111,6 +111,16 @@ class FeedItem:
         self.tags = []
         if category_tags:
             self.get_tags(entry.get("tags", []))
+
+    def get_id(self, content):
+        """
+        some feeds don't have an id-element.
+        use the hashed link in that case.
+        """
+        if content.get("id") is not None:
+            return content.get("id")
+        else:
+            return hash(content.get("link"))
 
     def get_body(self, content):
         """
