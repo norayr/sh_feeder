@@ -112,15 +112,15 @@ class FeedItem:
         if category_tags:
             self.get_tags(entry.get("tags", []))
 
-    def get_id(self, content):
+    def get_id(self, entry):
         """
         some feeds don't have an id-element.
         use the hashed link in that case.
         """
-        if content.get("id") is not None:
-            return content.get("id")
+        if entry.get("id") is not None:
+            return entry.get("id")
         else:
-            return hash(content.get("link"))
+            return hash(entry.get("link"))
 
     def get_body(self, content):
         """
