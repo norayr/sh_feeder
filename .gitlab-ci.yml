@@ -1,8 +1,23 @@
+image: python:3.5
+
+stages:
+  - test
+  - build
+  - upload
+
+formatting:
+    stage: test
+    image: python:alpine
+    allow_failure: true
+    script:
+    - pip3 install -q black
+    - black --check .
+
 run:
-    image: python:3.5-alpine
+    stage: test
     script:
     - pip3 install -r requirements.txt -q
-    - ./pod_feeder.py
+    - pod_feeder_v2/pod_feeder.py
         --pod-url   $POD_FEEDER_TEST_POD
         --username  $POD_FEEDER_TEST_USER
         --password  $POD_FEEDER_TEST_PASSWORD
@@ -19,7 +34,7 @@ run:
         --via gitlb-ci
         --limit 1
         --debug
-    - ./pod_feeder.py
+    - pod_feeder_v2/pod_feeder.py
         --pod-url   $POD_FEEDER_TEST_POD
         --username  $POD_FEEDER_TEST_USER
         --password  $POD_FEEDER_TEST_PASSWORD
@@ -31,12 +46,27 @@ run:
         --full
         --limit 1
         --debug
-    - ./clean_db.py feed.db
+    - pod_feeder_v2/clean_db.py feed.db
 
-formatting:
-    # Black requires python >= 3.6
-    image: python:alpine
-    allow_failure: true
+build_package:
+    stage: build
+    only:
+      - tags
     script:
-    - pip3 install -q black
-    - black --check .
+    - python3 -m pip install --user --upgrade setuptools wheel
+    - python3 setup.py sdist bdist_wheel
+    artifacts:
+      paths:
+      - dist/
+      expire_in: 1 year
+
+upload_package:
+    stage: upload
+    only:
+      - tags
+    script:
+    - python3 -m pip install --user --upgrade setuptools twine wheel
+    - python3 -m twine upload dist/*
+
+include:
+  template: Dependency-Scanning.gitlab-ci.yml

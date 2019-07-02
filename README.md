@@ -14,7 +14,7 @@ is recommended.
 ## Installation
 pod_feeder_v2 requires python3. You can easily install the dependencies with pip:
 
-`pip3 install -r requirements.txt`
+`sudo pip3 install -r requirements.txt`
 
 This script is intended to be run as a cron job, which might look something like this:
 
