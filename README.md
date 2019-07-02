@@ -37,20 +37,20 @@ implemented because the feedparser library does not support it.
 ## Usage
 This script is intended to be run as a cron job, which might look something like this:
 
-`@hourly ~/pod_feeder.py --feed-id myfeed --feed-url http://example.com/feeds/rss --pod-url https://diaspora.example.com --username user --password ******** --quiet`
+`@hourly pod-feeder --feed-id myfeed --feed-url http://example.com/feeds/rss --pod-url https://diaspora.example.com --username user --password ******** --quiet`
 
 There is also a database cleaner script that you can run as often as you like to
 keep your database size under control:
 
-`@weekly ~/clean_db.py feed.db > /dev/null 2>&1`
+`@weekly pf-clean-db feed.db > /dev/null 2>&1`
 
-    usage: pod_feeder.py [-h] [--aspect-id ASPECT_ID] [--auto-tag AUTO_TAG]
-                         [--category-tags] [--database DATABASE] [--embed-image]
-                         --feed-id FEED_ID --feed-url FEED_URL
-                         [--ignore-tag IGNORE_TAG] [--limit LIMIT] [--no-branding]
-                         --pod-url POD_URL [--post-raw-link] [--timeout TIMEOUT]
-                         [--username USERNAME] [--via VIA] [--summary | --full]
-                         (--password PASSWORD | --fetch-only) [--debug | --quiet]
+    usage: pod-feeder [-h] [--aspect-id ASPECT_ID] [--auto-tag AUTO_TAG]
+                      [--category-tags] [--database DATABASE] [--embed-image]
+                      --feed-id FEED_ID --feed-url FEED_URL
+                      [--ignore-tag IGNORE_TAG] [--limit LIMIT] [--no-branding]
+                      --pod-url POD_URL [--post-raw-link] [--timeout TIMEOUT]
+                      [--username USERNAME] [--via VIA] [--summary | --full]
+                      (--password PASSWORD | --fetch-only) [--debug | --quiet]
 
     optional arguments:
       -h, --help            show this help message and exit
