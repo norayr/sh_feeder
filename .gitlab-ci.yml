@@ -3,10 +3,10 @@ run:
     script:
     - pip3 install -r requirements.txt -q
     - ./pod_feeder.py
-        --pod-url   $K8S_SECRET_POD_FEEDER_TEST_POD
-        --username  $K8S_SECRET_POD_FEEDER_TEST_USER
-        --password  $K8S_SECRET_POD_FEEDER_TEST_PASSWORD
-        --aspect-id $K8S_SECRET_POD_FEEDER_TEST_ASPECT_ID
+        --pod-url   $POD_FEEDER_TEST_POD
+        --username  $POD_FEEDER_TEST_USER
+        --password  $POD_FEEDER_TEST_PASSWORD
+        --aspect-id $POD_FEEDER_TEST_ASPECT_ID
         --database feed.db
         --feed-id eff
         --feed-url https://www.eff.org/rss/updates.xml
@@ -20,10 +20,10 @@ run:
         --limit 1
         --debug
     - ./pod_feeder.py
-        --pod-url   $K8S_SECRET_POD_FEEDER_TEST_POD
-        --username  $K8S_SECRET_POD_FEEDER_TEST_USER
-        --password  $K8S_SECRET_POD_FEEDER_TEST_PASSWORD
-        --aspect-id $K8S_SECRET_POD_FEEDER_TEST_ASPECT_ID
+        --pod-url   $POD_FEEDER_TEST_POD
+        --username  $POD_FEEDER_TEST_USER
+        --password  $POD_FEEDER_TEST_PASSWORD
+        --aspect-id $POD_FEEDER_TEST_ASPECT_ID
         --database feed.db
         --feed-id gitlab
         --feed-url $CI_PROJECT_URL/commits/$CI_COMMIT_REF_NAME?format=atom
