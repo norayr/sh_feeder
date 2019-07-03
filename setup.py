@@ -19,7 +19,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3",
-    install_requires=["diaspy", "feedparser", "html2text", "urllib3"],
+    install_requires=["diaspy-api", "feedparser", "html2text", "urllib3"],
     entry_points={
         "console_scripts": [
             "pod-feeder=pod_feeder_v2.pod_feeder:main",
