@@ -26,4 +26,5 @@ setuptools.setup(
             "pf-clean-db=pod_feeder_v2.clean_db:main",
         ]
     },
+    keywords="atom bot diaspora feeds newsfeeds rss social syndication",
 )
