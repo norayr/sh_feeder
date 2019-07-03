@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.1] - 2019-07-02
+### Fixed
+- Change package dependency from `diaspy` to `diaspy-api`
+
 ## [1.0.0] - 2019-07-02
 ### Added
 - First official release
@@ -17,3 +21,4 @@
 
 [Unreleased]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.0...master
 [1.0.0]: https://gitlab.com/brianodonnell/pod_feeder_v2/-/tags/1.0.0
+[1.0.1]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.0...1.0.1
