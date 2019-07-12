@@ -135,28 +135,48 @@ class FeedItem:
         """
         try to find a "cover" image for the entry, wherever it may be hiding
         """
-        media_content = entry.get("media_content")
+        media_content = self.get_image_from_media_content(entry.get("media_content"))
+        if media_content is not None:
+            return media_content
+        links = self.get_image_from_links(entry.get("links"))
+        if links is not None:
+            return links
+        content = self.get_image_from_content(entry.get("content"))
+        if content is not None:
+            return content
+        summary_detail = self.get_image_from_summary_detail(entry.get("summary_detail"))
+        if summary_detail is not None:
+            return summary_detail
+        summary = self.get_image_from_summary(entry.get("summary"))
+        if summary is not None:
+            return summary
+
+    def get_image_from_media_content(self, media_content):
         if isinstance(media_content, list) and len(media_content):
             for media in media_content:
                 m = self.find_image_link(media.get("url", ""))
                 if m is not None:
                     return m
-        links = entry.get("links")
+
+    def get_image_from_links(self, links):
         if isinstance(links, list) and len(links):
             for link in links:
                 if re.match("image\/", link.get("type", "")):
                     return link.get("href")
-        content = entry.get("content")
+
+    def get_image_from_content(self, content):
         if isinstance(content, list) and len(content):
             for c in content:
                 m = self.find_image_link(c.get("value", ""))
                 if m is not None:
                     return m
-        summary_detail = entry.get("summary_detail")
+
+    def get_image_from_summary_detail(self, summary_detail):
         m = self.find_image_link(summary_detail.get("value", ""))
         if m is not None:
             return m
-        summary = entry.get("summary")
+
+    def get_image_from_summary(self, summary):
         m = self.find_image_link(summary)
         if m is not None:
             return m
@@ -199,7 +219,7 @@ class FeedItem:
                 text = text_maker.handle(text_obj.get("value"))
             else:
                 text = text_obj.get("value")
-        return text
+        return text.rstrip()
 
     def sanitize_tag(self, tag):
         """
@@ -311,6 +331,30 @@ class PodClient:
         return True
 
 
+def initialize_db(conn):
+    # create the feeds table
+    conn.execute(
+        "CREATE TABLE feeds(guid VARCHAR(255) PRIMARY KEY, \
+        feed_id VARCHAR(127), title VARCHAR(255), link VARCHAR(255), \
+        image VARCHAR(255), image_title VARCHAR(255), \
+        hashtags VARCHAR(255), timestamp INTEGER(10), posted INTEGER(1), \
+        body VARCHAR(10240), summary VARCHAR(2048))"
+    )
+
+
+def alter_db(conn):
+    # check to see if this is a v1 database schema
+    summary_exists = False
+    rows = conn.execute("PRAGMA table_info('feeds')").fetchall()
+    for r in rows:
+        if "summary" in r:
+            summary_exists = True
+            break
+    if summary_exists == False:
+        # if the summary column doesn't exist, add it
+        conn.execute("ALTER TABLE feeds ADD COLUMN summary VARCHAR(2048)")
+
+
 def connect_db(file):
     """
     connect to the database and initialize if necessary
@@ -319,25 +363,9 @@ def connect_db(file):
     init_db = False if os.path.isfile(file) else True
     conn = sqlite3.connect(file)
     if init_db:
-        # create the feeds table
-        conn.execute(
-            "CREATE TABLE feeds(guid VARCHAR(255) PRIMARY KEY, \
-            feed_id VARCHAR(127), title VARCHAR(255), link VARCHAR(255), \
-            image VARCHAR(255), image_title VARCHAR(255), \
-            hashtags VARCHAR(255), timestamp INTEGER(10), posted INTEGER(1), \
-            body VARCHAR(10240), summary VARCHAR(2048))"
-        )
+        initialize_db(conn)
     else:
-        # check to see if this is a v1 database schema
-        summary_exists = False
-        rows = conn.execute("PRAGMA table_info('feeds')").fetchall()
-        for r in rows:
-            if "summary" in r:
-                summary_exists = True
-                break
-        if summary_exists == False:
-            # if the summary column doesn't exist, add it
-            conn.execute("ALTER TABLE feeds ADD COLUMN summary VARCHAR(2048)")
+        alter_db(conn)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -494,4 +522,5 @@ def main():
     db.close()
 
 
-main()
+if __name__ == "__main__":
+    main()

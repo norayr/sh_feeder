@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Added
+- Add unit tests
+### Changed
+- Refactor parts of `pod_feeder.py` to make unit testing easier
 
 ## [1.0.1] - 2019-07-02
 ### Fixed

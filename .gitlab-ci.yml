@@ -13,6 +13,13 @@ formatting:
     - pip3 install -q black
     - black --check .
 
+unittest:
+    image: python:latest
+    stage: test
+    script:
+    - pip3 install -r requirements.txt -q
+    - python3 -m unittest
+
 run:
     stage: test
     script:
