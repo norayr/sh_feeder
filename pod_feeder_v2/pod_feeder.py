@@ -152,6 +152,9 @@ class FeedItem:
             return summary
 
     def get_image_from_media_content(self, media_content):
+        """
+        tries to get an image link from the "media_content" data
+        """
         if isinstance(media_content, list) and len(media_content):
             for media in media_content:
                 m = self.find_image_link(media.get("url", ""))
@@ -159,12 +162,18 @@ class FeedItem:
                     return m
 
     def get_image_from_links(self, links):
+        """
+        tries to get an image link from the "links" data
+        """
         if isinstance(links, list) and len(links):
             for link in links:
                 if re.match("image\/", link.get("type", "")):
                     return link.get("href")
 
     def get_image_from_content(self, content):
+        """
+        tries to get an image link from the "content" data
+        """
         if isinstance(content, list) and len(content):
             for c in content:
                 m = self.find_image_link(c.get("value", ""))
@@ -172,11 +181,17 @@ class FeedItem:
                     return m
 
     def get_image_from_summary_detail(self, summary_detail):
+        """
+        tries to get an image link from the "summary_detail" data
+        """
         m = self.find_image_link(summary_detail.get("value", ""))
         if m is not None:
             return m
 
     def get_image_from_summary(self, summary):
+        """
+        tries to get an image link from the "summary" text
+        """
         m = self.find_image_link(summary)
         if m is not None:
             return m
