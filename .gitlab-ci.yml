@@ -4,7 +4,6 @@ stages:
   - test
   - build
   - upload
-  - dependency_scan
 
 formatting:
     stage: test
@@ -78,7 +77,6 @@ upload_package:
     - python3 -m twine upload dist/*
 
 dependency_scan:
-    stage: dependency_scan
     image:
       name: hawkeyesec/scanner-cli
       entrypoint: [""]

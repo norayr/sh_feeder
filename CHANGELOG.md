@@ -29,4 +29,4 @@
 [Unreleased]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.2...master
 [1.0.0]: https://gitlab.com/brianodonnell/pod_feeder_v2/-/tags/1.0.0
 [1.0.1]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.0...1.0.1
-[1.0.1]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.1...1.0.2
+[1.0.2]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.1...1.0.2
