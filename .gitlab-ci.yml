@@ -4,12 +4,14 @@ stages:
   - test
   - build
   - upload
+  - dependency_scan
 
 formatting:
     stage: test
     image: python:alpine
     allow_failure: true
     script:
+    - apk add gcc musl-dev
     - pip3 install -q black
     - black --check .
 
@@ -75,5 +77,11 @@ upload_package:
     - python3 -m pip install --user --upgrade setuptools twine wheel
     - python3 -m twine upload dist/*
 
-include:
-  template: Dependency-Scanning.gitlab-ci.yml
+dependency_scan:
+    stage: dependency_scan
+    image:
+      name: hawkeyesec/scanner-cli
+      entrypoint: [""]
+    allow_failure: true
+    script:
+      - hawkeye scan -t . -m python-safety -m python-piprot -j hawkeye-results.json
