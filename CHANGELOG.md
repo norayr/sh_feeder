@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.3] - 2019-12-03
+### Changed
+- Updated requirements.txt package versions
+
 ## [1.0.2] - 2019-11-12
 ### Added
 - Add unit tests
@@ -30,3 +34,4 @@
 [1.0.0]: https://gitlab.com/brianodonnell/pod_feeder_v2/-/tags/1.0.0
 [1.0.1]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.0...1.0.1
 [1.0.2]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.1...1.0.2
+[1.0.3]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.2...1.0.3
