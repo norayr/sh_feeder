@@ -135,19 +135,23 @@ class FeedItem:
         """
         try to find a "cover" image for the entry, wherever it may be hiding
         """
-        media_content = self.get_image_from_media_content(entry.get("media_content"))
+        media_content = self.get_image_from_media_content(
+            entry.get("media_content", {})
+        )
         if media_content is not None:
             return media_content
-        links = self.get_image_from_links(entry.get("links"))
+        links = self.get_image_from_links(entry.get("links", {}))
         if links is not None:
             return links
-        content = self.get_image_from_content(entry.get("content"))
+        content = self.get_image_from_content(entry.get("content", []))
         if content is not None:
             return content
-        summary_detail = self.get_image_from_summary_detail(entry.get("summary_detail"))
+        summary_detail = self.get_image_from_summary_detail(
+            entry.get("summary_detail", {})
+        )
         if summary_detail is not None:
             return summary_detail
-        summary = self.get_image_from_summary(entry.get("summary"))
+        summary = self.get_image_from_summary(entry.get("summary", ""))
         if summary is not None:
             return summary
 

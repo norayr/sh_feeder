@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [1.0.4] - 2020-01-31
+### Changed
+- Updated requirements.txt package versions
+### Fixed
+- Handle missing fields more gracefully
+
 ## [1.0.3] - 2019-12-03
 ### Changed
 - Updated requirements.txt package versions
@@ -35,3 +41,4 @@
 [1.0.1]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.0...1.0.1
 [1.0.2]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.1...1.0.2
 [1.0.3]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.2...1.0.3
+[1.0.4]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.3...1.0.4
