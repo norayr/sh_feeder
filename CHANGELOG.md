@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [1.0.5] - 2020-08-01
+### Changed
+- Updated requirements.txt package versions
+
 ## [1.0.4] - 2020-01-31
 ### Changed
 - Updated requirements.txt package versions
@@ -42,3 +46,4 @@
 [1.0.2]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.1...1.0.2
 [1.0.3]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.2...1.0.3
 [1.0.4]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.3...1.0.4
+[1.0.5]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.4...1.0.5
