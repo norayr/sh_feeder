@@ -42,7 +42,9 @@ class TestFeed(unittest.TestCase):
     @mock.patch.object(FeedItem, "__init__")
     def test_get_items(self, mock_init, mock_add_tags, mock_remove_tags):
         mock_init.return_value = None
-        feed = Feed(auto_tags=["auto"], ignore_tags=["ignore"])
+        feed = Feed(
+            auto_tags=["auto"], ignore_tags=["ignore"], url="https://example.com"
+        )
         feed.entries = ["entry"]
         items = feed.get_items()
         self.assertIsInstance(items, list)
@@ -71,7 +73,7 @@ class TestFeed(unittest.TestCase):
         mock_get_image.return_value = "IMAGE"
         mock_get_body.return_value = "BODY"
         mock_get_summary.return_value = "SUMMARY"
-        feed = Feed(feed_id="FEED_ID")
+        feed = Feed(feed_id="FEED_ID", url="FEED_URL")
         item = FeedItem({"id": "GUID", "title": "TITLE", "link": "LINK"})
         conn = connect_db(":memory:")
         feed.items = [item]
