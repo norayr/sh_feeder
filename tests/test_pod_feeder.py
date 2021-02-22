@@ -197,9 +197,44 @@ class TestFeedItem(unittest.TestCase):
         self.assertEqual(
             FeedItem.find_image_link(
                 FeedItem,
+                "This is a link -->https://example.com/test.PNG<-- This is a link",
+            ),
+            "https://example.com/test.PNG",
+        )
+        self.assertEqual(
+            FeedItem.find_image_link(
+                FeedItem,
                 "This is a link -->https://example.com/test.png<-- This is a link",
             ),
             "https://example.com/test.png",
+        )
+        self.assertEqual(
+            FeedItem.find_image_link(
+                FeedItem,
+                "This is a link -->https://example.com/test.jpg<-- This is a link",
+            ),
+            "https://example.com/test.jpg",
+        )
+        self.assertEqual(
+            FeedItem.find_image_link(
+                FeedItem,
+                "This is a link -->https://example.com/test.jpeg<-- This is a link",
+            ),
+            "https://example.com/test.jpeg",
+        )
+        self.assertEqual(
+            FeedItem.find_image_link(
+                FeedItem,
+                "This is a link -->https://example.com/test.tif<-- This is a link",
+            ),
+            "https://example.com/test.tif",
+        )
+        self.assertEqual(
+            FeedItem.find_image_link(
+                FeedItem,
+                "This is a link -->https://example.com/test.webp<-- This is a link",
+            ),
+            "https://example.com/test.webp",
         )
         self.assertIsNone(
             FeedItem.find_image_link(

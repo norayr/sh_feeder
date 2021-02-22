@@ -205,7 +205,7 @@ class FeedItem:
         search a string for an embedded image link
         """
         m = re.search(
-            "(https?:\/\/[^'\"]*\.(gif|jpg|jpeg|png))", content, re.IGNORECASE
+            "(https?:\/\/[^'\"]*\.(gif|jpe?g|png|tiff?|webp))", content, re.IGNORECASE
         )
         if m:
             return m.group(1)
