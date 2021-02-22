@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+
+## [1.0.7] - 2021-02-22
 ### Changed
 - Recognize TIF and WEBP image extensions
 - Look for image URLs in <media:thumbnail />
@@ -56,3 +58,4 @@
 [1.0.4]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.3...1.0.4
 [1.0.5]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.4...1.0.5
 [1.0.6]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.5...1.0.6
+[1.0.7]: https://gitlab.com/brianodonnell/pod_feeder_v2/compare/1.0.6...1.0.7
