@@ -1,6 +1,10 @@
 # Changelog
 
 ## [Unreleased]
+### Changed
+- Recognize TIF and WEBP image extensions
+- Look for image URLs in <media:thumbnail />
+- Updated requirements.txt package versions
 
 ## [1.0.6] - 2020-11-01
 ### Fixed

@@ -134,22 +134,26 @@ class TestFeedItem(unittest.TestCase):
     @mock.patch.object(FeedItem, "get_image_from_summary_detail")
     @mock.patch.object(FeedItem, "get_image_from_content")
     @mock.patch.object(FeedItem, "get_image_from_links")
+    @mock.patch.object(FeedItem, "get_image_from_media_thumbnail")
     @mock.patch.object(FeedItem, "get_image_from_media_content")
     def test_get_image(
         self,
         mock_get_image_from_media_content,
+        mock_get_image_from_media_thumbnail,
         mock_get_image_from_links,
         mock_get_image_from_content,
         mock_get_image_from_summary_detail,
         mock_get_image_from_summary,
     ):
         mock_get_image_from_media_content.return_value = None
+        mock_get_image_from_media_thumbnail.return_value = None
         mock_get_image_from_links.return_value = None
         mock_get_image_from_content.return_value = None
         mock_get_image_from_summary_detail.return_value = None
         mock_get_image_from_summary.return_value = None
         FeedItem.get_image(FeedItem, {})
         mock_get_image_from_media_content.assert_called()
+        mock_get_image_from_media_thumbnail.assert_called()
         mock_get_image_from_links.assert_called()
         mock_get_image_from_content.assert_called()
         mock_get_image_from_summary_detail.assert_called()
@@ -163,6 +167,15 @@ class TestFeedItem(unittest.TestCase):
         )
         self.assertIsNone(FeedItem.get_image_from_media_content(FeedItem, []))
         self.assertIsNone(FeedItem.get_image_from_media_content(FeedItem, {}))
+
+    @mock.patch.object(FeedItem, "find_image_link")
+    def test_get_image_from_media_thumbnail(self, mock_find_image_link):
+        mock_find_image_link.return_value = "IMAGE"
+        self.assertEqual(
+            FeedItem.get_image_from_media_thumbnail(FeedItem, [{"url": ""}]), "IMAGE"
+        )
+        self.assertIsNone(FeedItem.get_image_from_media_thumbnail(FeedItem, []))
+        self.assertIsNone(FeedItem.get_image_from_media_thumbnail(FeedItem, {}))
 
     def test_get_image_from_links(self):
         self.assertEqual(

@@ -140,6 +140,11 @@ class FeedItem:
         )
         if media_content is not None:
             return media_content
+        media_thumbnail = self.get_image_from_media_thumbnail(
+            entry.get("media_thumbnail", {})
+        )
+        if media_thumbnail is not None:
+            return media_thumbnail
         links = self.get_image_from_links(entry.get("links", {}))
         if links is not None:
             return links
@@ -161,6 +166,16 @@ class FeedItem:
         """
         if isinstance(media_content, list) and len(media_content):
             for media in media_content:
+                m = self.find_image_link(media.get("url", ""))
+                if m is not None:
+                    return m
+
+    def get_image_from_media_thumbnail(self, media_thumbnail):
+        """
+        tries to get an image link from the "media_thumbnail" data
+        """
+        if isinstance(media_thumbnail, list) and len(media_thumbnail):
+            for media in media_thumbnail:
                 m = self.find_image_link(media.get("url", ""))
                 if m is not None:
                     return m
