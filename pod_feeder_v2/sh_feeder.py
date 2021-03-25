@@ -2,6 +2,7 @@
 
 import argparse, diaspy, feedparser, html2text, os.path, re, sqlite3, time
 import urllib.parse
+import os
 
 
 class Feed:
@@ -287,7 +288,6 @@ class PodClient:
 
     def __init__(self, url=None, token=None):
         self.url = url
-        self.token = args.token
 
     def post(self, message, via=None):
         """
@@ -298,6 +298,9 @@ class PodClient:
         #self.stream.post(text=message, provider_display_name=via, token)
         print (self.token)
         print (message)
+        print (self.url)
+        cmd = "~/.local/bin/shcli create " + self.url + " " + self.token + " -t '" + message + "' -v public" 
+        os.system(cmd)
 
     def format_post(
         self,
@@ -350,6 +353,7 @@ class PodClient:
             summary=args.summary,
             no_branding=args.no_branding,
         )
+        self.token=args.token
         self.post(message, via=args.via)
         return True
 
@@ -504,7 +508,7 @@ def parse_args():
     # we don't need/want a password when --fetch-only is used and vice versa
     fetch_only = parser.add_mutually_exclusive_group(required=True)
     #fetch_only.add_argument("--password", help="The D* user password")
-    fetch_only.add_argument("--token", help="SocialHome API token", required=True)
+    fetch_only.add_argument("--token", help="SocialHome API token")
     fetch_only.add_argument(
         "--fetch-only",
         help="Don't publish to SH, queue the new feed items for later",
