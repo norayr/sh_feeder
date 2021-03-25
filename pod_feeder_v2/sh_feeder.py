@@ -285,30 +285,19 @@ class PodClient:
     handle interactions with the pod
     """
 
-    def __init__(self, url=None, username=None, password=None):
+    def __init__(self, url=None, token=None):
         self.url = url
-        self.username = username
-        self.password = password
-        self.stream = self.connect()
+        self.token = args.token
 
-    def connect(self):
-        """
-        login and return a Stream object
-        """
-        client = diaspy.connection.Connection(
-            pod=self.url, username=self.username, password=self.password
-        )
-        client.login()
-        # fetch=False to prevent diaspy from loading the stream needlessly
-        return diaspy.streams.Stream(client, fetch=False)
-
-    def post(self, message, aspect_ids=[], via=None):
+    def post(self, message, via=None):
         """
         post a message
         """
-        if len(aspect_ids) == 0:
-            aspect_ids.append("public")
-        self.stream.post(text=message, aspect_ids=aspect_ids, provider_display_name=via)
+        #if len(aspect_ids) == 0:
+        #    aspect_ids.append("public")
+        #self.stream.post(text=message, provider_display_name=via, token)
+        print (self.token)
+        print (message)
 
     def format_post(
         self,
@@ -345,7 +334,7 @@ class PodClient:
         if not no_branding:
             output = (
                 output
-                + "posted by [pod_feeder_v2](https://gitlab.com/brianodonnell/pod_feeder_v2/)"
+                + "posted by [socialhome_feeder](https://github.com/norayr/sh_feeder/)"
             )
         return output
 
@@ -361,7 +350,7 @@ class PodClient:
             summary=args.summary,
             no_branding=args.no_branding,
         )
-        self.post(message, via=args.via, aspect_ids=args.aspect_id)
+        self.post(message, via=args.via)
         return True
 
 
@@ -427,13 +416,13 @@ def parse_args():
     proccess command line args
     """
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--aspect-id",
-        help="Numerical aspect ID to share with. \
-            May be specified multiple times (default: 'public')",
-        action="append",
-        default=[],
-    )
+    #parser.add_argument(
+    #    "--aspect-id",
+    #    help="Numerical aspect ID to share with. \
+    #        May be specified multiple times (default: 'public')",
+    #    action="append",
+    #    default=[],
+    #)
     parser.add_argument(
         "--auto-tag",
         help="Hashtags to add to all posts. May be specified multiple times",
@@ -475,11 +464,10 @@ def parse_args():
     )
     parser.add_argument(
         "--no-branding",
-        help="Do not include 'via pod_feeder_v2' footer to posts",
+        help="Do not include 'via socialhome feeder' footer to posts",
         action="store_true",
-        default=False,
-    )
-    parser.add_argument("--pod-url", help="The pod URL", required=True)
+        default=False)
+    parser.add_argument("--pod-url", help="The instance URL", required=True)
     parser.add_argument(
         "--post-raw-link",
         help="Post the raw link instead of hyperlinking the article title",
@@ -492,7 +480,7 @@ def parse_args():
         type=int,
         default=72,
     )
-    parser.add_argument("--username", help="The D* login username", default="podmin")
+    #parser.add_argument("--username", help="The D* login username", default="podmin")
     parser.add_argument(
         "--via",
         help="Sets the 'posted via' footer text (default: 'pod_feeder_v2')",
@@ -515,10 +503,11 @@ def parse_args():
     )
     # we don't need/want a password when --fetch-only is used and vice versa
     fetch_only = parser.add_mutually_exclusive_group(required=True)
-    fetch_only.add_argument("--password", help="The D* user password")
+    #fetch_only.add_argument("--password", help="The D* user password")
+    fetch_only.add_argument("--token", help="SocialHome API token", required=True)
     fetch_only.add_argument(
         "--fetch-only",
-        help="Don't publish to Diaspora, queue the new feed items for later",
+        help="Don't publish to SH, queue the new feed items for later",
         action="store_true",
         default=False,
     )
@@ -550,7 +539,7 @@ def main():
     # skip pusblishing if --fetch-only is used
     if not args.fetch_only:
         client = PodClient(
-            url=args.pod_url, username=args.username, password=args.password
+            url=args.pod_url, token=args.token
         )
         publish_items(db, client, args=args)
     db.close()
