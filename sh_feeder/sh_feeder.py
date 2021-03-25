@@ -299,7 +299,7 @@ class PodClient:
         print (self.token)
         print (message)
         print (self.url)
-        cmd = "~/.local/bin/shcli create " + self.url + " " + self.token + " -t '" + message + "' -v public" 
+        cmd = "~/.local/bin/shcli create " + self.url + " " + self.token + " -t '" + message + "' -v public"
         os.system(cmd)
 
     def format_post(
