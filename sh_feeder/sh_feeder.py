@@ -2,7 +2,8 @@
 
 import argparse, diaspy, feedparser, html2text, os.path, re, sqlite3, time
 import urllib.parse
-import os
+#import os
+import shcli
 
 
 class Feed:
@@ -299,8 +300,9 @@ class PodClient:
         print (self.token)
         print (message)
         print (self.url)
-        cmd = "~/.local/bin/shcli create " + self.url + " " + self.token + " -t '" + message + "' -v public"
-        os.system(cmd)
+        #cmd = "~/.local/bin/shcli create " + self.url + " " + self.token + " -t '" + message + "' -v public"
+        #os.system(cmd)
+        shcli.create(self.url, self.token, message, "public")
 
     def format_post(
         self,
