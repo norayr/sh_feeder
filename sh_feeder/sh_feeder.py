@@ -222,7 +222,8 @@ class FeedItem:
         search a string for an embedded image link
         """
         m = re.search(
-            "(https?:\/\/[^'\"]*\.(gif|jpe?g|png|tiff?|webp))", content, re.IGNORECASE
+            #"(https?:\/\/[^'\"]*\.(gif|jpe?g|png|tiff?|webp).*)\"", content, re.IGNORECASE
+            "\"(https?:\/\/[^'\"]*\.(gif|jpe?g|png|tiff?|webp)(.+?))\"", content, re.IGNORECASE
         )
         if m:
             return m.group(1)
@@ -328,7 +329,8 @@ class PodClient:
         if embed_image and content["image"] is not None:
             output = output + "![%s](%s)\n\n" % (
                 content["image_title"],
-                urllib.parse.quote(content["image"], safe="*';:@&=+$,/?#"),
+                #urllib.parse.quote(content["image"], safe="*';:@&=+$,/?#"),
+                content["image"],
             )
         if summary and content["summary"] is not None:
             output = output + "%s\n\n" % content["summary"]
